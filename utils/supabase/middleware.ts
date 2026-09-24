@@ -5,10 +5,6 @@ import { type NextRequest, NextResponse } from "next/server";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error("Missing Supabase environment variables");
-}
-
 type CookieToSet = {
   name: string;
   value: string;
@@ -56,6 +52,10 @@ export function getSafeInternalPath(
 export async function updateSession(
   request: NextRequest,
 ): Promise<SessionUpdateResult> {
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Missing Supabase environment variables");
+  }
+
   const cookiesToApply: CookieToSet[] = [];
 
   const supabase = createServerClient(supabaseUrl!, supabaseKey!, {

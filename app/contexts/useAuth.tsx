@@ -42,7 +42,26 @@ const PROFILE_REFRESH_EVENTS = new Set<AuthChangeEvent>([
   "PASSWORD_RECOVERY",
 ]);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+const guestAuth: AuthContextType = {
+  user: null,
+  profile: null,
+  session: null,
+  loading: false,
+  signOut: async () => {},
+  refreshProfile: async () => {},
+};
+
+export function AuthProvider({ children, disabled = false }: {
+  children: React.ReactNode;
+  disabled?: boolean;
+}) {
+  if (disabled) {
+    return <AuthContext.Provider value={guestAuth}>{children}</AuthContext.Provider>;
+  }
+  return <SessionAuthProvider>{children}</SessionAuthProvider>;
+}
+
+function SessionAuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<Session | null>(null);

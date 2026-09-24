@@ -18,22 +18,6 @@ import {
 } from "@/lib/seo";
 import "../globals.css";
 
-const THEME_INLINE_SCRIPT = `
-(function () {
-  try {
-    var get = function (name) {
-      var m = document.cookie.match(new RegExp("(?:^|;\\s*)" + name + "=([^;]*)"));
-      return m ? decodeURIComponent(m[1]) : null;
-    };
-    var pref = get("openvid_theme_pref") || get("openvid_theme") || "system";
-    var dark = pref === "system"
-      ? window.matchMedia("(prefers-color-scheme: dark)").matches
-      : pref === "dark";
-    document.documentElement.classList.toggle("dark", dark);
-  } catch (e) {}
-})();
-`;
-
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -186,11 +170,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale || defaultLocale} suppressHydrationWarning>
       <head>
-        <Script
-          id="openvid-theme"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{ __html: THEME_INLINE_SCRIPT }}
-        />
+        <Script id="openvid-theme" src="/openvid-theme.js" strategy="beforeInteractive" />
       </head>
       <body
         className={`${inter.variable} ${roboto.variable} ${inter.className} antialiased`}

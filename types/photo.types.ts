@@ -91,6 +91,16 @@ export const PHONE_IMAGE_PREVIEWS_DEFAULT: PhoneImagePreviewConfig[] = buildPhon
 
 export function getPhoneImagePreviews(device: string): PhoneImagePreviewConfig[] {
   switch (device) {
+    case "iphone-duo":
+      return buildPhonePresets([
+        { x: 0, y: 0, scale: 0.7, rotateX: 12, rotateY: -25, rotateZ: -6 },
+        { x: 0, y: 0, scale: 0.7, rotateX: -6, rotateY: -15, rotateZ: 0 },
+        { x: 0, y: 0, scale: 0.7, rotateX: 15, rotateY: 22, rotateZ: -10 },
+        { x: 0, y: 0, scale: 0.7, rotateX: 28, rotateY: 25, rotateZ: 0 },
+        { x: 0, y: 0, scale: 0.7, rotateX: 35, rotateY: 0, rotateZ: 0 },
+        { x: 0, y: 0, scale: 0.7, rotateX: 20, rotateY: -12, rotateZ: 8 },
+        { x: 0, y: 0, scale: 0.7, rotateX: 0, rotateY: 0, rotateZ: 0 },
+      ]).map((preset) => ({ ...preset, imageUrl: `/images/devices-positions/iphone-duo/${preset.id}.webp` }));
     case "iphone-13-pro-max":
       return PHONE_IMAGE_PREVIEWS_IPHONE13;
     case "double_iphone_13_pro":

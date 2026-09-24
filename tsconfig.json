@@ -30,5 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "openvid-back"]
+  "exclude": ["node_modules", "openvid-back", "iphone-duo-main"]
 }

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { IMAGE_DEVICE_TEMPLATES } from "@/types";
@@ -61,15 +62,17 @@ export function DeviceCard({
                                 : `linear-gradient(135deg, ${tpl.accentColor}10 0%, transparent 70%)`,
                         }}
                     />
-                    <img
+                    <Image
+                        fill
+                        sizes="160px"
                         src={tpl.posterUrl}
                         alt={tpl.title}
                         draggable={false}
                         className={`absolute inset-0 h-full w-full object-cover transition-all duration-500 ${
-                            isHovering ? "scale-105 opacity-0" : "scale-100 opacity-100"
+                            isHovering && videoReady && tpl.videoUrl ? "scale-105 opacity-0" : "scale-100 opacity-100"
                         }`}
                     />
-                    <video
+                    {tpl.videoUrl && <video
                         ref={videoRef}
                         src={tpl.videoUrl}
                         poster={tpl.posterUrl}
@@ -81,7 +84,7 @@ export function DeviceCard({
                         className={`absolute inset-0 h-full w-full object-cover transition-all duration-500 ${
                             isHovering && videoReady ? "scale-105 opacity-100" : "scale-100 opacity-0"
                         }`}
-                    />
+                    />}
                     <div
                         className={`absolute inset-0 z-20 bg-black/20 transition-opacity duration-300 ${
                             isHovering ? "opacity-100" : "opacity-0"

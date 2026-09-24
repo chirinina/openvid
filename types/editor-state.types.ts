@@ -1,3 +1,4 @@
+import type { ImageDeviceId } from "@/types/mockup.types";
 import type { BackgroundTab, AspectRatio, BackgroundColorConfig, CropArea, ZoomFragment, AudioTrack, ZoomMovement } from "@/types";
 import type { TrimRange } from "@/types/timeline.types";
 import type { MockupConfig } from "@/types/mockup.types";
@@ -47,7 +48,7 @@ export interface EditorState {
     imagePhoneRotY: number;
     imagePhoneRotZ: number;
     imagePhonePerspective: number;
-    imagePhoneDevice: 'phone' | 'iphone' | 'iphone-13-pro-max' | 'iphone-17-pro-max' | 'double_iphone_13_pro' | 'laptop' | 'ipad_mini_6_2021';
+    imagePhoneDevice: ImageDeviceId;
     imagePhonePresetId: string;
     imagePhoneOpening: number;
     imagePhoneShadow: number;

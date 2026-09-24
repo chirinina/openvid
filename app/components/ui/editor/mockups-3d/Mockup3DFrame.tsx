@@ -24,6 +24,11 @@ interface DeviceLayout {
 }
 
 const DEVICE_LAYOUT: Record<ImageDeviceId, DeviceLayout> = {
+  "iphone-duo": {
+    width: 1100, height: 900,
+    overlay: { kind: "fixed", pointerEvents: "auto" },
+    maskInset: 0,
+  },
   "iphone-13-pro-max": {
     width: 480, height: 1000,
     marginTop: "100px", marginRight: "0",

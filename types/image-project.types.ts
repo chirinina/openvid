@@ -1,3 +1,4 @@
+import type { ImageDeviceId } from "@/types/mockup.types";
 import type { BackgroundTab, BackgroundColorConfig, AspectRatio, CropArea } from "@/types";
 import type { MockupConfig } from "@/types/mockup.types";
 import { CanvasElement } from "./canvas-elements.types";
@@ -50,7 +51,7 @@ export interface ImageProject {
     imagePhoneRotY: number;
     imagePhoneRotZ: number;
     imagePhonePerspective: number;
-    imagePhoneDevice: 'phone' | 'iphone' | 'iphone-13-pro-max' | 'double_iphone_13_pro' | 'laptop' | 'iphone-17-pro-max' | 'ipad_mini_6_2021';
+    imagePhoneDevice: ImageDeviceId;
     imagePhonePresetId: string;
     imagePhoneOpening: number;
     imagePhoneShadow: number;

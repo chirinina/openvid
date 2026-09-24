@@ -147,7 +147,14 @@ export function MockupMenu({
       setImagePhoneY(0);
       setImagePhoneScale(0.9);
 
-      if (id === "iphone-13-pro-max") {
+      if (id === "iphone-duo") {
+        setImagePhoneRotX(6);
+        setImagePhoneRotY(-12);
+        setImagePhoneRotZ(0);
+        setImagePhoneOpening(1);
+        setImagePhoneScale(0.7);
+        setImagePhonePresetId("custom");
+      } else if (id === "iphone-13-pro-max") {
         setImagePhoneRotX(-58.23);
         setImagePhoneRotY(-29.82);
         setImagePhoneScale(1.6);
@@ -171,7 +178,7 @@ export function MockupMenu({
   }, [
     imagePhoneDevice, imagePhoneRotX, imagePhoneRotY, setImagePhoneDevice,
     setImagePhoneX, setImagePhoneY, setImagePhoneScale, setImagePhoneRotX,
-    setImagePhoneRotY, setImagePhoneOpening, setImagePhoneActive, mockupId, onMockupChange
+    setImagePhoneRotY, setImagePhoneRotZ, setImagePhonePresetId, setImagePhoneOpening, setImagePhoneActive, mockupId, onMockupChange
   ]);
 
   const handleRemoveAll = useCallback(() => {

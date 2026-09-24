@@ -29,6 +29,7 @@ export const RENDER_W = PHONE_W * RENDER_MULTIPLIER;
 export const RENDER_H = PHONE_H * RENDER_MULTIPLIER;
 
 export const DEVICE_3D_DIMENSIONS: Record<string, { width: number; height: number }> = {
+  'iphone-duo': { width: 1100, height: 900 },
   'phone': { width: PHONE_W, height: PHONE_H },
   'iphone': { width: PHONE_W, height: PHONE_H },
   'iphone-13-pro-max': { width: 480, height: 1000 },
@@ -39,6 +40,7 @@ export const DEVICE_3D_DIMENSIONS: Record<string, { width: number; height: numbe
 };
 
 export const PHONE_DEVICE_URLS: Record<string, string | undefined> = {
+    'iphone-duo': '/models/iphone-duo.glb',
     phone: '/models/phone-gltf.glb',
     iphone: '/models/iphone-15-pro-max.glb',
     'iphone-13-pro-max': '/models/apple_iphone_13_pro_max.glb',
@@ -78,6 +80,7 @@ export const deviceConfigs: Record<DeviceKey, DeviceConfig> = {
 };
 
 export const DEVICE_VIEWER_DEFAULTS: Record<string, { environment: EnvironmentPreset; glow: number }> = {
+  "iphone-duo": { environment: "studio", glow: 1.2 },
   double_iphone_13_pro: { environment: "studio", glow: 3.0 },
   "iphone-13-pro-max": { environment: "sunset", glow: 2.0 },
   "iphone-17-pro-max": { environment: "studio", glow: 1.0 },

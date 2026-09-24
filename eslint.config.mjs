@@ -18,6 +18,7 @@ const eslintConfig = defineConfig([
     // Independent backend and desktop projects have their own toolchains.
     "openvid-back/**",
     "openvid-autozoom/**",
+    "iphone-duo-main/**",
   ]),
 ]);
 

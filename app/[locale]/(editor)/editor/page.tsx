@@ -1,5 +1,6 @@
 "use client";
 
+import { EDITOR_WITHOUT_AUTH } from "@/app/config/editor";
 import { useState, useRef, useEffect, useCallback, lazy, Suspense, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -1036,7 +1037,7 @@ export default function Editor() {
     const router = useRouter();
 
     const handleExport = useCallback((quality: ExportQuality) => {
-        if (!authUser) {
+        if (!EDITOR_WITHOUT_AUTH && !authUser) {
             savePendingExport(quality);
             router.replace({
                 pathname: "/login",

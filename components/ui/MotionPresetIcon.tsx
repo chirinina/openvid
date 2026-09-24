@@ -47,7 +47,9 @@ export function MotionPresetIcon({
       <div className="mp-grid pointer-events-none absolute inset-0" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[0.06] to-transparent" />
       <div className="mp-perspective absolute inset-0 flex items-center justify-center">
-        <span className={`mp-card mp-card--${presetId}`} />
+        {presetId.startsWith("duo-") ? (
+          <span className={`mp-duo mp-duo--${presetId}`}><span className="mp-duo-half mp-duo-left" /><span className="mp-duo-half mp-duo-right" /></span>
+        ) : <span className={`mp-card mp-card--${presetId}`} />}
       </div>
     </div>
   );
@@ -56,6 +58,17 @@ export function MotionPresetIcon({
 export function MotionPresetIconStyles() {
   return (
     <style jsx global>{`
+      .mp-duo { width: 48%; height: 58%; position: relative; transform-style: preserve-3d; transform: rotateX(10deg) rotateY(-15deg); }
+      .mp-duo-half { position: absolute; top: 0; height: 100%; width: 50%; border: 2px solid #a8adba; background: linear-gradient(145deg, #252d59, #b7a1ec 55%, #e9c7ac); box-shadow: inset 0 0 0 2px #15161b, 0 8px 18px #0006; backface-visibility: visible; }
+      .mp-duo-left { left: 0; border-radius: 7px 1px 1px 7px; transform-origin: right center; }
+      .mp-duo-right { right: 0; border-radius: 1px 7px 7px 1px; }
+      .mp-duo--duo-unfold .mp-duo-left { transform: rotateY(145deg); }
+      @media (prefers-reduced-motion: no-preference) {
+        .group:hover .mp-duo-left, .force-animate .mp-duo-left { animation: mp-duo-open 2.4s ease-in-out infinite alternate; }
+        .group:hover .mp-duo--duo-fold .mp-duo-left, .force-animate .mp-duo--duo-fold .mp-duo-left { animation-direction: alternate-reverse; }
+        .group:hover .mp-duo--duo-cycle .mp-duo-left, .force-animate .mp-duo--duo-cycle .mp-duo-left { animation-duration: 1.8s; }
+      }
+      @keyframes mp-duo-open { 0%, 12% { transform: rotateY(175deg); } 85%, 100% { transform: rotateY(0deg); } }
       .mp-grid {
         opacity: 0.05;
         background-image: linear-gradient(

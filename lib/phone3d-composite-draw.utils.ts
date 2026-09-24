@@ -6,7 +6,7 @@ import { REST_MOCKUP_3D_MOTION } from "@/lib/mockup-motion-3d";
 import * as THREE from "three";
 
 export interface Phone3DApi {
-  renderAt: (w: number, h: number) => void;
+  renderAt: (w: number, h: number, motion?: Mockup3DMotionTransform) => void;
   restorePreview: () => void;
   hasBuiltInShadow?: boolean;
   getVisualSize?: () => { width: number; height: number; offsetY?: number } | null;
@@ -96,7 +96,7 @@ export function drawPhone3DCompositeWithZoom(
   }
 
   if (highQuality) {
-    imagePhoneApiRef.current?.renderAt(baseW, baseH);
+    imagePhoneApiRef.current?.renderAt(baseW, baseH, motion);
   }
 
   c.save();

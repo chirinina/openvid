@@ -1,5 +1,6 @@
 "use client";
 
+import { EDITOR_WITHOUT_AUTH } from "@/app/config/editor";
 import { Icon } from "@iconify/react";
 import { ExportDropdown } from "../ExportDropdown";
 import { ExportImageDropdown } from "../ExportImageDropdown";
@@ -142,7 +143,7 @@ export function EditorTopBar({
                     </TooltipAction>
                 </div>
 
-                {loading ? (
+                {EDITOR_WITHOUT_AUTH ? null : loading ? (
                     <div className="flex items-center gap-2 pl-3 border-l border-border ml-1">
                         <div className="hidden sm:flex flex-col items-end gap-1.5">
                             <div className="w-16 h-2.5 bg-muted rounded-sm animate-pulse"></div>

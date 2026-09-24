@@ -1,4 +1,6 @@
 "use client";
+import { Device3DBoundary } from "./Device3DBoundary";
+import { IPhoneDuoScene } from "./IPhoneDuo3DViewer";
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
@@ -29,7 +31,7 @@ export interface Mockup3DStageProps {
   initialRotationX?: number;
   initialRotationY?: number;
   initialRotationZ?: number;
-  openingProgress?: number;   // solo laptop
+  openingProgress?: number;   // laptop / foldable phone
   modelUrl?: string;          // solo devices genéricos (phone/iphone)
   onRotationChange?: (rx: number, ry: number) => void;
   onMount?: (canvas: HTMLCanvasElement) => void;
@@ -136,7 +138,11 @@ function Motion3DApplicator({
   return null;
 }
 
-export function Mockup3DStage({ device, rootRef: externalRootRef, cameraRef: externalCameraRef, onLoadedChange, ...props }: StageProps) {
+export function Mockup3DStage(props: StageProps) {
+  return <Device3DBoundary key={props.device}><StageContent {...props} /></Device3DBoundary>;
+}
+
+function StageContent({ device, rootRef: externalRootRef, cameraRef: externalCameraRef, onLoadedChange, ...props }: StageProps) {
   const internalRootRef = useRef<THREE.Group | null>(null);
   const internalCameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rootRef = externalRootRef ?? internalRootRef;
@@ -174,9 +180,9 @@ export function Mockup3DStage({ device, rootRef: externalRootRef, cameraRef: ext
           powerPreference: "high-performance",
           failIfMajorPerformanceCaveat: false,
         }}
-        dpr={3}
-        frameloop={props.videoElement || hasMotion ? "always" : "demand"}
-        resize={{ scroll: false, debounce: { scroll: 0, resize: 0 } }}
+        dpr={device === "iphone-duo" ? [1, 2] : 3}
+        frameloop={props.videoElement || props.autoRotate || hasMotion ? "always" : "demand"}
+        resize={{ scroll: false, offsetSize: device === "iphone-duo", debounce: { scroll: 0, resize: 0 } }}
         onCreated={({ gl, scene }) => {
           gl.outputColorSpace = THREE.SRGBColorSpace;
           gl.toneMapping = THREE.NeutralToneMapping;
@@ -195,6 +201,9 @@ export function Mockup3DStage({ device, rootRef: externalRootRef, cameraRef: ext
           )}
           {device === "iphone-17-pro-max" && (
             <IPhone17ProMaxScene {...props} rootRef={rootRef} cameraRef={cameraRef} onLoaded={markLoaded} />
+          )}
+          {device === "iphone-duo" && (
+            <IPhoneDuoScene {...props} rootRef={rootRef} cameraRef={cameraRef} onLoaded={markLoaded} />
           )}
           {device === "laptop" && (
             <LaptopScene {...props} rootRef={rootRef} cameraRef={cameraRef} onLoaded={markLoaded} />

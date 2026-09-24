@@ -20,7 +20,10 @@ export type MockupMotionPresetId =
   | "macro-pan"
   | "screen-glide"
   | "float-hold"
-  | "spiral-drop";
+  | "spiral-drop"
+  | "duo-unfold"
+  | "duo-fold"
+  | "duo-cycle";
 
 export type MockupMotionMode = "2d" | "3d";
 
@@ -43,6 +46,9 @@ export const MOCKUP_MOTION_PRESETS: MockupMotionPresetDef[] = [
   { id: "rise-crash", category: "Continue", mode: "2d" },
   { id: "exit-fade-down", category: "Exit", mode: "2d" },
   { id: "exit-scale-blur", category: "Exit", mode: "2d" },
+  { id: "duo-unfold", category: "Entrance", mode: "3d" },
+  { id: "duo-cycle", category: "Continue", mode: "3d" },
+  { id: "duo-fold", category: "Exit", mode: "3d" },
   { id: "orbit-entrance", category: "Entrance", mode: "3d" },
   { id: "flick-exit", category: "Exit", mode: "3d" },
   { id: "hero-reveal", category: "Entrance", mode: "3d" },

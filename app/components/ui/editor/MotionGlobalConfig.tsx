@@ -1,8 +1,10 @@
 "use client";
 import { Icon } from "@iconify/react";
 import { useTranslations } from "next-intl";
-import { MOCKUP_MOTION_PRESETS, type MockupMotionPresetId, type MockupMotionMode, MockupMotionFragment, getMotionPresetMode } from "@/lib/mockup-motion";
+import { MOCKUP_MOTION_PRESETS, type MockupMotionPresetId, type MockupMotionMode, MockupMotionFragment } from "@/lib/mockup-motion";
 import { MotionPresetIcon, MotionPresetIconStyles } from "../../../../components/ui/MotionPresetIcon";
+import { supports3DMotionPreset } from "@/lib/mockup-motion-3d";
+import { useMockup3dContext } from "@/app/contexts/Mockup3dContext";
 import { Toggle } from "@/components/ui/toggle";
 
 interface MotionGlobalConfigProps {
@@ -24,6 +26,7 @@ export function MotionGlobalConfig({
   onToggleGlobalMotion,
 }: MotionGlobalConfigProps) {
   const t = useTranslations("motionMenu");
+  const { imagePhoneDevice } = useMockup3dContext();
 
   // Derive which motion mode is active: 3D takes priority when a 3D mockup
   // is present, otherwise fall back to 2D. When neither is present we show
@@ -58,7 +61,7 @@ export function MotionGlobalConfig({
     );
   }
 
-  const presetsForMode = MOCKUP_MOTION_PRESETS.filter((p) => p.mode === activeMode);
+  const presetsForMode = MOCKUP_MOTION_PRESETS.filter((p) => p.mode === activeMode && supports3DMotionPreset(p.id, imagePhoneDevice));
 
   return (
     <div className="p-4 flex flex-col gap-4 h-full relative min-h-0">

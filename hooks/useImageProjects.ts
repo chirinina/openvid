@@ -1,5 +1,6 @@
 "use client";
 
+import type { ImageDeviceId } from "@/types/mockup.types";
 import { useState, useCallback, useEffect } from "react";
 import type { ImageProject, ImageProjectPreview } from "@/types/image-project.types";
 import {
@@ -50,7 +51,7 @@ interface ImageProjectState {
     imagePhoneRotY: number;
     imagePhoneRotZ: number;
     imagePhonePerspective: number;
-    imagePhoneDevice: 'phone' | 'iphone' | 'iphone-13-pro-max' | 'iphone-17-pro-max' | 'double_iphone_13_pro' | 'laptop' | 'ipad_mini_6_2021';
+    imagePhoneDevice: ImageDeviceId;
     imagePhonePresetId: string;
     imagePhoneOpening: number;
     imagePhoneShadow: number;

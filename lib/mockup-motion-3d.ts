@@ -6,11 +6,17 @@ export type Mockup3DMotionPresetId =
   | "macro-pan"
   | "screen-glide"
   | "float-hold"
-  | "spiral-drop";
+  | "spiral-drop"
+  | "duo-unfold"
+  | "duo-fold"
+  | "duo-cycle";
 export const MOCKUP_3D_MOTION_PRESETS: {
   id: Mockup3DMotionPresetId;
   category: "Entrance" | "Continue" | "Exit";
 }[] = [
+  { id: "duo-unfold", category: "Entrance" },
+  { id: "duo-cycle", category: "Continue" },
+  { id: "duo-fold", category: "Exit" },
     { id: "orbit-entrance", category: "Entrance" },
     { id: "hero-reveal", category: "Entrance" },
 
@@ -21,6 +27,11 @@ export const MOCKUP_3D_MOTION_PRESETS: {
     { id: "flick-exit", category: "Exit" },
     { id: "spiral-drop", category: "Exit" },
   ];
+
+/** Fold presets are only meaningful on a device with the Duo hinge. */
+export function supports3DMotionPreset(presetId: string, device: string): boolean {
+  return !presetId.startsWith("duo-") || device === "iphone-duo";
+}
 
 export interface Mockup3DMotionConfig {
   presetId: Mockup3DMotionPresetId;
@@ -53,6 +64,8 @@ export interface Mockup3DMotionTransform {
   scale: number;
   /** Opacity [0..1] — applied to materials when < 1. */
   opacity: number;
+  /** Absolute hinge progress for foldable devices; undefined uses the manual pose. */
+  openingProgress?: number;
 }
 
 export const REST_MOCKUP_3D_MOTION: Mockup3DMotionTransform = {
@@ -103,6 +116,29 @@ export function sampleMockup3DMotion(
   if (presetId === "none" || clipDurationSec <= 0) return REST_MOCKUP_3D_MOTION;
 
   switch (presetId) {
+    case "duo-unfold":
+    case "duo-fold":
+    case "duo-cycle": {
+      const p = clamp01(currentTime / clipDurationSec);
+      // Speed shapes the transition within the fragment, preserving its endpoints.
+      const duration = lerp(1, 0.35, clamp01(speed / 100));
+      const t = presetId === "duo-fold"
+        ? clamp01((p - (1 - duration)) / duration)
+        : clamp01(p / duration);
+      const eased = easeInOutCubic(t);
+      const cycle = easeInOutCubic(clamp01(p < 0.5 ? p * 2 / duration : (1 - p) * 2 / duration));
+      const openingProgress = presetId === "duo-unfold" ? eased
+        : presetId === "duo-fold" ? 1 - eased : 1 - cycle;
+      const tilt = Math.sin(openingProgress * Math.PI) * i;
+      return {
+        ...REST_MOCKUP_3D_MOTION,
+        openingProgress,
+        rotY: tilt * -12 * DEG,
+        rotX: tilt * 4 * DEG,
+        scale: 1 + tilt * 0.06,
+      };
+    }
+
     /**
      * ORBIT ENTRANCE — the model sweeps in from a dramatic three-quarter
      * angle while rising on the Y axis, then settles into its resting pose.
@@ -316,6 +352,8 @@ export function getDefault3DFragmentDuration(
   presetId: Mockup3DMotionPresetId,
   speed: number
 ): number {
+  if (presetId.startsWith("duo-")) return presetId === "duo-cycle" ? 4 : 2;
+
   if (LONG_DURATION_PRESETS_3D.has(presetId)) {
     return lerp(10, 6.0, clamp01(speed / 100));
   }
@@ -369,6 +407,8 @@ function apply3DMotionCustomOffsets(
 
   return {
     ...base,
+    openingProgress: base.openingProgress === undefined ? undefined
+      : custom.reverse ? 1 - base.openingProgress : base.openingProgress,
     scale: base.scale * custom.zoomMultiplier,
     posX: base.posX * sign + custom.positionX,
     posY: base.posY * sign + custom.positionY,
@@ -413,7 +453,15 @@ export function sampleCombined3DMotion(
     (f) => currentTime >= f.startTime && currentTime <= f.endTime
   );
 
-  if (active.length === 0) return REST_MOCKUP_3D_MOTION;
+  // Keep the most recent completed fold pose while the timeline continues.
+  // Sampling by time (not frame history) makes scrubbing and export identical.
+  const lastFold = fragments.filter((f) => f.presetId.startsWith("duo-") && f.endTime < currentTime)
+    .sort((a, b) => b.endTime - a.endTime)[0];
+  const rest = lastFold ? {
+    ...REST_MOCKUP_3D_MOTION,
+    openingProgress: sample3DFragmentMotion(lastFold, lastFold.endTime).openingProgress,
+  } : REST_MOCKUP_3D_MOTION;
+  if (active.length === 0) return rest;
 
   return active.reduce<Mockup3DMotionTransform>(
     (acc, fragment) => {
@@ -427,9 +475,10 @@ export function sampleCombined3DMotion(
         posZ: acc.posZ + t.posZ,
         scale: acc.scale * t.scale,
         opacity: acc.opacity * t.opacity,
+        openingProgress: t.openingProgress ?? acc.openingProgress,
       };
     },
-    { ...REST_MOCKUP_3D_MOTION }
+    { ...rest }
   );
 }
 

@@ -240,7 +240,13 @@ export function Mockup3dMenu({
         setImagePhoneRotY(defaultRotY);
         setImagePhoneRotZ(0);
 
-        if (imagePhoneDevice === "laptop") {
+        if (imagePhoneDevice === "iphone-duo") {
+            setImagePhoneScale(0.7);
+            setImagePhoneRotX(6);
+            setImagePhoneRotY(-12);
+            setImagePhoneOpening(1);
+            setImagePhoneShadow(0.4);
+        } else if (imagePhoneDevice === "laptop") {
             setImagePhoneOpening(1);
             setImagePhoneShadow(0.7);
         } else if (imagePhoneDevice === "double_iphone_13_pro") {
@@ -351,10 +357,10 @@ export function Mockup3dMenu({
                         {t("modelProperties") || "Propiedades del Modelo"}
                     </span>
 
-                    {isLaptop && (
+                    {(isLaptop || imagePhoneDevice === "iphone-duo") && (
                         <SliderControl
-                            icon="material-symbols:laptop-chromebook-outline"
-                            label={t("laptopOpening")}
+                            icon={imagePhoneDevice === "iphone-duo" ? "lucide:book-open" : "material-symbols:laptop-chromebook-outline"}
+                            label={t(imagePhoneDevice === "iphone-duo" ? "foldOpening" : "laptopOpening")}
                             value={Math.round(imagePhoneOpening * 100)}
                             min={0}
                             max={100}

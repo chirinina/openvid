@@ -1,5 +1,6 @@
 "use client";
 
+import { supports3DMotionPreset } from "@/lib/mockup-motion-3d";
 import { useRef, useEffect, useImperativeHandle, useMemo, useState, useCallback, memo, lazy, Suspense } from "react";
 import type * as THREE from "three";
 import type { VideoCanvasHandle, VideoCanvasProps, VideoThumbnail } from "@/types";
@@ -246,7 +247,7 @@ function VideoCanvasInner({
     // Root THREE.Group ref for applying 3D motion during export rendering.
     const imagePhoneRootRef = useRef<THREE.Group | null>(null);
     const imagePhoneApiRef = useRef<{
-        renderAt: (w: number, h: number) => void;
+        renderAt: (w: number, h: number, motion?: Mockup3DMotionTransform) => void;
         restorePreview: () => void;
         hasBuiltInShadow?: boolean;
         getVisualSize?: () => { width: number; height: number; offsetY?: number } | null; // ← offsetY
@@ -762,16 +763,16 @@ function VideoCanvasInner({
     );
 
     // 3D motion: sample fragments that belong to 3D presets only.
-    const hasMockup3DMotion = imagePhoneActive && mockupMotionFragments.some((f) => MOTION_PRESET_3D_IDS.has(f.presetId));
+    const hasMockup3DMotion = imagePhoneActive && mockupMotionFragments.some((f) => MOTION_PRESET_3D_IDS.has(f.presetId) && supports3DMotionPreset(f.presetId, imagePhoneDevice));
 
     const mockup3DMotionPreview = useMemo<Mockup3DMotionTransform>(
         () => {
             if (!hasMockup3DMotion) return REST_MOCKUP_3D_MOTION;
-            const fragments3D = mockupMotionFragments.filter((f) => MOTION_PRESET_3D_IDS.has(f.presetId));
+            const fragments3D = mockupMotionFragments.filter((f) => MOTION_PRESET_3D_IDS.has(f.presetId) && supports3DMotionPreset(f.presetId, imagePhoneDevice));
             if (fragments3D.length === 0) return REST_MOCKUP_3D_MOTION;
             return sampleCombined3DMotion(fragments3D as unknown as Parameters<typeof sampleCombined3DMotion>[0], currentTime);
         },
-        [hasMockup3DMotion, mockupMotionFragments, currentTime]
+        [hasMockup3DMotion, mockupMotionFragments, currentTime, imagePhoneDevice]
     );
 
     // Effective aspect ratio for the "none" mockup contain-box, adjusted for
@@ -1372,7 +1373,7 @@ function VideoCanvasInner({
         // 3D motion sampled at this export frame's time.
         const motion3DForFrame: Mockup3DMotionTransform = hasMockup3DMotion
             ? (() => {
-                const fragments3D = mockupMotionFragments.filter((f) => MOTION_PRESET_3D_IDS.has(f.presetId));
+                const fragments3D = mockupMotionFragments.filter((f) => MOTION_PRESET_3D_IDS.has(f.presetId) && supports3DMotionPreset(f.presetId, imagePhoneDevice));
                 return fragments3D.length > 0
                     ? sampleCombined3DMotion(fragments3D as unknown as Parameters<typeof sampleCombined3DMotion>[0], frameTime)
                     : REST_MOCKUP_3D_MOTION;
@@ -1553,7 +1554,7 @@ function VideoCanvasInner({
                     motionRoot.position.z = basePz + m3d.posZ;
                 }
                 if (highQuality) {
-                    imagePhoneApiRef.current?.renderAt(drawW, drawH);
+                    imagePhoneApiRef.current?.renderAt(drawW, drawH, m3d);
                     drawMaskedImage(ctx, phoneGL, phoneCx - drawW / 2, phoneCy - drawH / 2, drawW, drawH, effectivePhoneMaskConfig, maskCompositeCanvasRef);
                     imagePhoneApiRef.current?.restorePreview();
                 } else {
@@ -2548,7 +2549,7 @@ function VideoCanvasInner({
                                                             rootRef={imagePhoneRootRef}
                                                             imageUrl={imageUrl}
                                                             videoElement={activeVideoElement ?? undefined}
-                                                            openingProgress={imagePhoneDevice === "laptop" ? imagePhoneOpening : undefined}
+                                                            openingProgress={imagePhoneOpening}
                                                             modelUrl={imagePhoneDevice === "phone" || imagePhoneDevice === "iphone" ? imagePhoneModelUrl : undefined}
                                                             imageMaskConfig={effectivePhoneMaskConfig}
                                                             cropArea={cropArea}
