@@ -134,8 +134,8 @@ export function IPhoneDuoScene({
       videoElement.addEventListener("resize", updateVideo);
     } else {
       const urls = imageUrl ? [imageUrl, imageUrl] : [
-        "/images/mockups-3d/iphone-duo/apple-desert.avif",
-        "/images/mockups-3d/iphone-duo/apple-desert-cover.avif",
+        "/images/mockups-3d/apple-desert_duo.avif",
+        "/images/mockups-3d/apple-desert-cover_duo.avif",
       ];
       Promise.all(urls.map(async (url, index) => {
         const texture = await new THREE.TextureLoader().loadAsync(url);

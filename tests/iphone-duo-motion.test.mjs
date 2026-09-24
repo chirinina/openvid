@@ -46,7 +46,7 @@ test('folded pose is retained through gaps and unrelated motion', () => {
   assert.equal(sampleCombined3DMotion(fragments, 2.5).openingProgress, 0);
   assert.equal(sampleCombined3DMotion(fragments, 4).openingProgress, 0);
   assert.equal(sampleCombined3DMotion(fragments, 10).openingProgress, 1);
-  assert.equal(sampleCombined3DMotion(fragments, -1).openingProgress, undefined);
+  assert.equal(sampleCombined3DMotion(fragments, -1).openingProgress, 1);
 });
 
 test('random scrubbing and serialized project restore match sequential export sampling', () => {

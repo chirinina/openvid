@@ -10,7 +10,7 @@ import { Phone3DApi, Phone3DScene } from "./Phone3DViewer";
 import { Laptop3DApi, LaptopScene } from "./Laptop3DViewer";
 import { IPhone17ProMax3DApi, IPhone17ProMaxScene } from "./IPhone17ProMax3DViewer";
 import { IPadMini63DApi, IPadMiniScene } from "./IPadMini63DViewer";
-import { ImageMaskConfigLike } from "@/lib/phone3d.utils";
+import { ImageMaskConfigLike, PHONE_DEVICE_URLS } from "@/lib/phone3d.utils";
 import type { ImageDeviceId } from "@/types/mockup.types";
 import { EnvironmentPreset } from "@/lib/viewer-controls3d";
 import { REST_MOCKUP_3D_MOTION, type Mockup3DMotionTransform } from "@/lib/mockup-motion-3d";
@@ -139,7 +139,7 @@ function Motion3DApplicator({
 }
 
 export function Mockup3DStage(props: StageProps) {
-  return <Device3DBoundary key={props.device}><StageContent {...props} /></Device3DBoundary>;
+  return <Device3DBoundary key={props.device} modelUrl={PHONE_DEVICE_URLS[props.device]}><StageContent {...props} /></Device3DBoundary>;
 }
 
 function StageContent({ device, rootRef: externalRootRef, cameraRef: externalCameraRef, onLoadedChange, ...props }: StageProps) {

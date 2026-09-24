@@ -27,7 +27,7 @@ export function DuoMotionCard() {
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card">
       <div className="relative h-36 overflow-hidden bg-[#101116]">
-        <Image width={800} height={480} src="/images/mockups-3d/iphone-duo/preview.webp" alt="iPhone Duo" className="h-full w-full object-cover" />
+        <Image width={800} height={480} src="/images/mockups-3d/iphone-duo.png" alt="iPhone Duo" className="h-full w-full object-cover" />
         <span className="absolute left-3 top-3 rounded-full border border-white/15 bg-black/35 px-2 py-1 text-[9px] font-medium uppercase tracking-widest text-white/80">3D · iPhone Duo</span>
       </div>
       <div className="space-y-3 p-3">

@@ -457,9 +457,17 @@ export function sampleCombined3DMotion(
   // Sampling by time (not frame history) makes scrubbing and export identical.
   const lastFold = fragments.filter((f) => f.presetId.startsWith("duo-") && f.endTime < currentTime)
     .sort((a, b) => b.endTime - a.endTime)[0];
-  const rest = lastFold ? {
+  const nextFold = lastFold ? undefined : fragments
+    .filter((f) => f.presetId.startsWith("duo-") && f.startTime > currentTime)
+    .sort((a, b) => a.startTime - b.startTime)[0];
+  const heldOpeningProgress = lastFold
+    ? sample3DFragmentMotion(lastFold, lastFold.endTime).openingProgress
+    : nextFold
+      ? sample3DFragmentMotion(nextFold, nextFold.startTime).openingProgress
+      : undefined;
+  const rest = heldOpeningProgress !== undefined ? {
     ...REST_MOCKUP_3D_MOTION,
-    openingProgress: sample3DFragmentMotion(lastFold, lastFold.endTime).openingProgress,
+    openingProgress: heldOpeningProgress,
   } : REST_MOCKUP_3D_MOTION;
   if (active.length === 0) return rest;
 

@@ -5,7 +5,6 @@ import { defaultLocale, locales, type Locale } from "@/i18n";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Inter, Roboto } from "next/font/google";
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { SuppressScriptWarning } from "@/app/components/common/SuppressScriptWarning";
 import {
@@ -17,6 +16,22 @@ import {
   SEO_OG_IMAGE,
 } from "@/lib/seo";
 import "../globals.css";
+
+const THEME_INLINE_SCRIPT = `
+(function () {
+  try {
+    var get = function (name) {
+      var match = document.cookie.match(new RegExp("(?:^|;\\s*)" + name + "=([^;]*)"));
+      return match ? decodeURIComponent(match[1]) : null;
+    };
+    var preference = get("openvid_theme_pref") || get("openvid_theme") || "system";
+    var isDark = preference === "system"
+      ? window.matchMedia("(prefers-color-scheme: dark)").matches
+      : preference === "dark";
+    document.documentElement.classList.toggle("dark", isDark);
+  } catch {}
+})();
+`;
 
 const inter = Inter({
   subsets: ["latin"],
@@ -170,7 +185,10 @@ export default async function LocaleLayout({
   return (
     <html lang={locale || defaultLocale} suppressHydrationWarning>
       <head>
-        <Script id="openvid-theme" src="/openvid-theme.js" strategy="beforeInteractive" />
+        <script
+          id="openvid-theme"
+          dangerouslySetInnerHTML={{ __html: THEME_INLINE_SCRIPT }}
+        />
       </head>
       <body
         className={`${inter.variable} ${roboto.variable} ${inter.className} antialiased`}
