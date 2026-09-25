@@ -1553,24 +1553,30 @@ function VideoCanvasInner({
                     motionRoot.position.y = basePy + m3d.posY;
                     motionRoot.position.z = basePz + m3d.posZ;
                 }
-                if (highQuality) {
-                    imagePhoneApiRef.current?.renderAt(drawW, drawH, m3d);
-                    drawMaskedImage(ctx, phoneGL, phoneCx - drawW / 2, phoneCy - drawH / 2, drawW, drawH, effectivePhoneMaskConfig, maskCompositeCanvasRef);
-                    imagePhoneApiRef.current?.restorePreview();
-                } else {
-                    drawMaskedImage(ctx, phoneGL, phoneCx - drawW / 2, phoneCy - drawH / 2, drawW, drawH, effectivePhoneMaskConfig, maskCompositeCanvasRef);
-                }
-                // Restore the root group's base transform after rendering.
-                if (has3DMotion && motionRoot && savedBase) {
-                    motionRoot.rotation.x = savedBase.rx;
-                    motionRoot.rotation.y = savedBase.ry;
-                    motionRoot.rotation.z = savedBase.rz;
-                    motionRoot.scale.x = savedBase.sx;
-                    motionRoot.scale.y = savedBase.sy;
-                    motionRoot.scale.z = savedBase.sz;
-                    motionRoot.position.x = savedBase.px;
-                    motionRoot.position.y = savedBase.py;
-                    motionRoot.position.z = savedBase.pz;
+                try {
+                    if (highQuality) {
+                        try {
+                            imagePhoneApiRef.current?.renderAt(drawW, drawH, m3d);
+                            drawMaskedImage(ctx, phoneGL, phoneCx - drawW / 2, phoneCy - drawH / 2, drawW, drawH, effectivePhoneMaskConfig, maskCompositeCanvasRef);
+                        } finally {
+                            imagePhoneApiRef.current?.restorePreview();
+                        }
+                    } else {
+                        drawMaskedImage(ctx, phoneGL, phoneCx - drawW / 2, phoneCy - drawH / 2, drawW, drawH, effectivePhoneMaskConfig, maskCompositeCanvasRef);
+                    }
+                } finally {
+                    // Restore the root group's base transform after rendering.
+                    if (has3DMotion && motionRoot && savedBase) {
+                        motionRoot.rotation.x = savedBase.rx;
+                        motionRoot.rotation.y = savedBase.ry;
+                        motionRoot.rotation.z = savedBase.rz;
+                        motionRoot.scale.x = savedBase.sx;
+                        motionRoot.scale.y = savedBase.sy;
+                        motionRoot.scale.z = savedBase.sz;
+                        motionRoot.position.x = savedBase.px;
+                        motionRoot.position.y = savedBase.py;
+                        motionRoot.position.z = savedBase.pz;
+                    }
                 }
 
             }
